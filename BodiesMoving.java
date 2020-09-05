@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.lang.Math;
 
-// This class calculates how multiple bodies move, each being pulled by the gravitational force from the others.
+// This class calculates how multiple bodies move, each being pulled by the gravitational force  of the others.
 // It uses a Newtonian model and does not use Einstein's relativity.
-// It will write output to a file. The first line will contain then names of the bodies and their radii.
+// It will write output to a file. The first line will contain the names of the bodies and their radii.
 // The rest of the rows will contain their positions in 3 dimensional cartesian co-ordinates.
 // The unit of distance used is meter.
 
