@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.lang.Math;
 
-
-// This class calculates how bodies move under Newtonian Gravity
+// This class calculates how multiple bodies move, each being pulled by the gravitational force from the others.
+// It uses a Newtonian model and does not use Einstein's relativity.
 
 // Notes:
 // To get a good estimate of the final velocity, could use 
@@ -23,27 +23,15 @@ public class BodiesMoving {
 	private ArrayList<Body> m_bodies;
 	private boolean         m_displayFinalPos;
 	private String          m_lineSep;
-	/////////////////////////////////////////////////////////////////////////////
-    public void setConfigData(){    	
-    	
-    	m_outputFilePath     = new String ("outputs/movingBodies_" + getTimeStampString() + ".csv");
-    	m_timeStepInterval   = 1 * 24 * 3600;   // seconds
-    	m_numTimeSteps       = 50;
-    	m_outputInterval     = 1;           // 1 means every time-step will be output, 2 means every second one, etc
-    	m_displayFinalPos    = true;
-    	m_gravitationalConst = 6.67408e-11; // m^3 kg^-1 s^-2
-
-    	
-    	m_lineSep            = System.getProperty( "line.separator" );
-    }
 	//////////////////////////////////////////////////////////
     public void setBodiesData(){
     	// Data source used:
     	// https://nssdc.gsfc.nasa.gov/planetary/factsheet/
-    	// Though should used distances to centres and 
-    	// could set realistic initial positions and velocities
+    	// 
     	// For motion in a circle: speed = sqrt(GM/r)
     	// Where M is the mass of the sun.
+    	//
+    	// For now we don't actually use the radii.  In this model we treat the bodies as point masses.
     	
     	m_bodies = new ArrayList<Body>();
     	
@@ -52,27 +40,41 @@ public class BodiesMoving {
     	m_bodies.add(new Body("Mercury",   3.3e24,     2.44e6,       5.8e10,  0.0,    0.0,        0.0,    4.78e4, 0.0    )); 
     	m_bodies.add(new Body("Venus",     4.87e24,    6.05e6,       1.08e11, 0.0,    0.0,        0.0,    3.5e4,  0.0    )); 
     	m_bodies.add(new Body("Earth",     5.97e24,    6.37e6,       1.5e11,  0.0,    0.0,        0.0,    2.97e4, 0.0    )); 
-    	m_bodies.add(new Body("Moon",      7.3e22,     1.737e6,      1.5e11,  3.8e5,  0.0,        3.24e4, 2.97e4, 0.0    )); 
+    	m_bodies.add(new Body("Moon",      7.3e22,     1.737e6,      1.5e11,  4e8,    0.0,        1e3,    2.97e4, 0.0    )); 
     	m_bodies.add(new Body("Mars",      6.42e23,    6.96e6,       2.28e11, 0.0,    0.0,        0.0,    2.4e4,  0.0    )); 
     	m_bodies.add(new Body("Jupiter",   1.89e27,    7.149e7,      7.79e11, 0.0,    0.0,        0.0,    1.3e4,  0.0    )); 
-    	m_bodies.add(new Body("Meteorite", 3e9,        3e2,          1.5e11,  1.9e5,  0.0,        -1e6,   -1e4,   -1e2    )); 
+    	m_bodies.add(new Body("Meteorite", 3e9,        3e2,          1.5e11,  2e8,    0.0,        -1e3,   -1e4,   0.0    )); 
 
- //   	m_bodies.add(new Body("Test"",      10,         1,            1.5e11,     0.0,    0.0,     0.0,    3.5e4,    0.0    )); 
-   	
+      //m_bodies.add(new Body("Test",      10,         1,            1e11,    0.0,   0.0,         0.0,    36434.52363,  0.0    ));    	
+
     }		
+	/////////////////////////////////////////////////////////////////////////////
+    public void setConfigData(){    	
+    	
+    	m_outputFilePath     = new String ("outputs/movingBodies_" + getTimeStampString() + ".csv");
+    	m_timeStepInterval   = 1 * 3600;         // seconds, ( model seems to work when when this
+    	                                         // is kept to 1 hour (=3,600 sec) or less 
+    	m_numTimeSteps       = 100000;
+    	m_outputInterval     = 1000;             // 1 means every time-step will be output, 2 means every second one, etc
+                                                 // the number of time-steps in the output file will be: 
+    	                                         //      m_numTimeSteps / m_outputInterval
+    	m_displayFinalPos    = true;
+    	m_gravitationalConst = 6.67408e-11; // m^3 kg^-1 s^-2
+    	
+    	m_lineSep            = System.getProperty( "line.separator" );
+    }
 	///////////////////////////////////////////////////////////
 	public static void main(String[] args) {
 		System.out.println("Starting.");
 		
 		BodiesMoving movingBodies = new BodiesMoving();
-		movingBodies.initialize();
 		movingBodies.calculatePositions();
 		movingBodies.finalizeOutput();
 		
 		System.out.println("Completed.");
 	}
 	//////////////////////////////////////////////////////////
-	public void initialize(){
+	public BodiesMoving(){
 		setConfigData();
 		setBodiesData();
 		openFileForOutput();
@@ -315,6 +317,12 @@ public class BodiesMoving {
      could check for overflow errors
      could fail more gracefully if the output file cannot be written to.
      look into possible division by zero errors, particularly if we don't have collision checks.
+     could set better initial positions and velocities, could check if distances are to the surface or between centres.
+     could remove the comma at the end of each line in the output file.
+     
+     One bug / feature of the model is that if the centre of two bodies are on a direct collision course.
+     Then the objects can be predicted to accelerate massively, so much that they escape each others gravitational pull.
+     Ultimately it is caused by using the reciprocal of distance between centres, which can be close to zero.
      
  */
 
