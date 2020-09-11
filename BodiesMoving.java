@@ -60,8 +60,10 @@ public class BodiesMoving {
          m_timeStepInterval   = 1 * 3600;      // seconds, ( model seems to work when when this kept well below shortest_orbit_period / 100
                                                // For the moon, the orbit_period is just less than 30 days.
                                                // Could use 1 hour for m_timeStepInterval i.e. 3600 sec.
-         m_numTimeSteps       = 100000;        // For 8 bodes, with 100,000 time steps, calc time is about 1 second.
-         m_outputInterval     = 1000;          // 1 means every time-step will be output, 2 means every second one, etc
+         double totalTime = 365 * 24 * 3600;   // total simulation time in seconds.
+         int frames = 200;                     // approximate number of times the positions are output. I.e., number of frames in final animation.
+         m_numTimeSteps       = (int)(totalTime/m_timeStepInterval);        // For 8 bodes, with 100,000 time steps, calc time is about 1 second.
+         m_outputInterval     = (int)(totalTime/m_timeStepInterval/frames);          // 1 means every time-step will be output, 2 means every second one, etc
                                                // The number of time-steps in the output file will be: 
                                                //      m_numTimeSteps / m_outputInterval
          m_displayFinalPos    = true;
