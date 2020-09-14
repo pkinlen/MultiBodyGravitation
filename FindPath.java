@@ -118,11 +118,6 @@ public class FindPath {
          
          System.out.println("Completed.");
     }
-    /* To-do:
-     *     convert bodiesMoving calc into a function of one variable
-     *     use a solver that will find the initial position that will obtain the desired fly-by distance
-     *     
-     */
     
     public void findPositionsForFlyBy(){
 
@@ -164,7 +159,7 @@ public class FindPath {
 	NumericalSolver  getSolver(final int planet, final double[] thetas, final Config config){
 		
       	
-      	NumericalSolver.IfaceFnOneVariable quadratic = (new NumericalSolver.IfaceFnOneVariable()
+      	NumericalSolver.IfaceFnOneVariable fnOneVar = (new NumericalSolver.IfaceFnOneVariable()
       	      {public double fn(double thetaOverRide) 
       	         {return (findClosestPath(config, thetas, planet, thetaOverRide ));}  
       	       } );
@@ -177,7 +172,7 @@ public class FindPath {
       	
 
       	NumericalSolver solver = new NumericalSolver(flyByTargetDist, startTheta1, startTheta2, 
-      			                                     tol, maxSteps, quadratic);
+      			                                     tol, maxSteps, fnOneVar);
       	return solver;
 	}
     ////////////////////////////////////////////
