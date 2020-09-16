@@ -10,18 +10,17 @@ public class Config {
     
     private int     m_outputInterval;      // 1 means every time-step will be output, 2 means every second one, etc
                                            // The number of time-steps in the output file will be: 
-                                           //      m_numTimeSteps / m_outputInterval
-    
+                                           //      m_numTimeSteps / m_outputInterval  
     private boolean m_displayFinalPos;
     
 	private boolean m_sendOutputToFile;
     private String  m_outputFilePath;
     
-
     private String  m_lineSep;
     
     public static final double m_gravitationalConst = 6.67408e-11;   // m^3 kg^-1 s^-2
     public static final double m_massOfSun          = 1.989e30;      // kg
+    public static final double m_massOfEarth        = 5.972e24;      // kg
 
 	/////////////////////////////////////////////
 	public Config(double  flyByTargetDistance,
