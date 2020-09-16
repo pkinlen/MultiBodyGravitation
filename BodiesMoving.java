@@ -37,6 +37,7 @@ public class BodiesMoving {
      private double          m_gravitationalConst; 
      
     /////////////////////////////////////////////////////////////////////////////
+
      public BodiesMoving(ArrayList<Body> bodies, Config config){
           
           m_outputFilePath     = config.getOutputFilePath();
@@ -47,7 +48,7 @@ public class BodiesMoving {
           m_lineSep            = config.getLineSep();
           m_sendOutputToFile   = config.sendOutputToFile();
           m_gravitationalConst = Config.m_gravitationalConst;
-          
+
           m_bodies = bodies;
           
           if ( m_sendOutputToFile) 
