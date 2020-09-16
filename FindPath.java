@@ -6,21 +6,21 @@ public class FindPath {
 
 	private int m_meteoriteIdx;
     ////////////////////////////////////////////////////////////////////////////////
-    public Config  getConfigData(){
+    public Config  getConfigData(boolean withOutput){
     	
     	double  flyByTargetDistance = 2e8;      // the closest distance the meteorite gets to the surface.
     	
-    	double  timeStepInterval    = 1 * 30; // seconds, ( model seems to work when when this kept well below shortest_orbit_period / 100
+    	double  timeStepInterval    = 1 * 30;   // seconds, ( model seems to work when when this kept well below shortest_orbit_period / 100
                                                 // For the moon, the orbit_period is just less than 30 days.
                                                 // Could use 1 hour for m_timeStepInterval i.e. 3600 sec.
-    	
-    	int     numTimeSteps        = 100000;   // For 8 bodies, with 100,000 time steps, calc time is about 1 second.
-    	
-    	int     outputInterval      = 10;       // 1 means every time-step will be output, 2 means every second one, etc
-                                                // The number of time-steps in the output file will be: 
-                                                //      m_numTimeSteps / m_outputInterval
-    	boolean displayFinalPos     = true;
-    	boolean sendOutputToFile    = true;
+
+    	double  totalTime           = 30 * 24 * 3600;   // total simulation time in seconds.
+        int     frames              = 200;               // approximate number of times the positions are output. I.e., number of frames in final animation.
+        int     numTimeSteps        = (int)(totalTime /timeStepInterval);        // For 8 bodes, with 100,000 time steps, calc time is about 1 second.
+        int     outputInterval      = (int)(totalTime/(timeStepInterval * frames));          // 1 means every time-step will be output, 2 means every second one, etc    	    	
+    	    	
+    	boolean displayFinalPos     = withOutput;
+    	boolean sendOutputToFile    = withOutput;
     	  
     	String  outputFilePath      = new String ("outputs/movingBodies_" + getTimeStampString() + ".csv");
     	   	
@@ -59,12 +59,13 @@ public class FindPath {
         bodies.add(new Body("Saturn",  5.68e26,              6e7,          1.43e12,            2.6849444632859543  )); 
         bodies.add(new Body("Uranus",  8.68e25,              2.55e7,       2.87e12,            2.6874496533791175 )); 
         bodies.add(new Body("Neptune", 1.02e24,              2.47e7,       4.5e12,             2.688502873555769  )); 
-        
-        m_meteoriteIdx = 9;
+
+        addMoon(bodies, earthOrbitRadius, earthTheta);
+
+        m_meteoriteIdx = 10;
         //                  Name         Mass(kg),   Radius(m)     Initial Pos(m) 0,1,2    Initial Vel (m/s) 0,1,2
         bodies.add(new Body("Meteorite", 3e9,        3e2,          8e9,  0,  0.0,          -2e6, 1e6, 0.0   )); 
         
-        addMoon(bodies, earthOrbitRadius, earthTheta);
       
         return bodies;
    }          
@@ -148,7 +149,7 @@ public class FindPath {
     	int firstPlanet = 1;
     	int lastPlanet  = 8;
     	
-    	Config config = getConfigData();
+    	Config config = getConfigData(false);
     	
     	double thetas[] = getInitialPlanetAngles(Math.max(firstPlanet, lastPlanet));
     	reportFlyByDistances(thetas, config);
@@ -164,7 +165,7 @@ public class FindPath {
     ////////////////////////////////////////////
 	private void reportFlyByDistances(double[] thetas, Config config){
 		
-		for (int planet = 0; planet <= 8; planet++){
+		for (int planet = 0; planet <= 9; planet++){
 			
 			ArrayList<Body> bodies = getBodiesDataPolarCoords();
 	        BodiesMoving movingBodies = new BodiesMoving(bodies,config);
@@ -172,9 +173,13 @@ public class FindPath {
 			
 	        Body p = bodies.get(planet);
 	        
-	        System.out.println("Found closest distance between the meteorite and " 
-	                          + p.getName() + " is " + Double.toString(closestDist) 
-	                          + " with theta: " + Double.toString(thetas[planet]));
+	        if ( planet < thetas.length)
+	        	System.out.println("Found closest distance between the meteorite and " 
+	        						+ p.getName() + " is " + Double.toString(closestDist) 
+	        						+ " with theta: " + Double.toString(thetas[planet]));
+	        else
+	        	System.out.println("Found closest distance between the meteorite and " 
+						+ p.getName() + " is " + Double.toString(closestDist));
 		}
 	}
     ////////////////////////////////////////////
@@ -227,7 +232,7 @@ public class FindPath {
     /////////////////////////////////////////////////
     public void calculateMovementOfBodies(){
 
-         BodiesMoving movingBodies = new BodiesMoving(getBodiesDataPolarCoords(), getConfigData());
+         BodiesMoving movingBodies = new BodiesMoving(getBodiesDataPolarCoords(), getConfigData(true));
          movingBodies.calculatePositions();
     }
    ////////////////////////////////////////////////////////////////////////////////
