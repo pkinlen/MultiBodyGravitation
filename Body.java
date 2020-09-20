@@ -1,4 +1,7 @@
-//////////////////////////////////////////////////////////    
+//////////////////////////////////////////////////////////   
+// This class mostly just contains the data that is used by the BodiesMoving class.
+// It can be initialized with with cartesian or polar coordinates.
+// When polar coords are used, a circular orbit round the sun is assumed.
 public class Body{
      String m_name;
      double m_mass;          // kg
@@ -26,12 +29,12 @@ public class Body{
          m_bodyRadius  = bodyRadius;
          m_oneOverMass = 1.0 / m_mass;
 
-    	 initialize(initPos0, initPos1, initPos2, initVel0, initVel1, initVel2);    	 
+         initialize(initPos0, initPos1, initPos2, initVel0, initVel1, initVel2);         
      }
      ///////////////////////////////////////////////////////////////////
      public void initialize(double initPos0, double initPos1, double initPos2,
                             double initVel0, double initVel1, double initVel2)  {
-    	 
+         
           m_initPos0    = initPos0;
           m_initPos1    = initPos1;
           m_initPos2    = initPos2;
@@ -43,18 +46,18 @@ public class Body{
           /*
           System.out.println("Have body:  name: "         +                 name
                                      + ", mass: "         + Double.toString(mass)
-          		                     + ", body radius: "  + Double.toString(bodyRadius)
+                                       + ", body radius: "  + Double.toString(bodyRadius)
                                      + ", pos 0,1,2:   "  + Double.toString(initPos0) + ", " 
-          		                                          + Double.toString(initPos1) + ", "
-          		                                          + Double.toString(initPos2) + ", "
-          		                     + " vel 0,1,2: "     + Double.toString(initVel0) + ", "
-          		                                          + Double.toString(initVel1) + ", "
-          		                                          + Double.toString(initVel2) );
+                                                            + Double.toString(initPos1) + ", "
+                                                            + Double.toString(initPos2) + ", "
+                                       + " vel 0,1,2: "     + Double.toString(initVel0) + ", "
+                                                            + Double.toString(initVel1) + ", "
+                                                            + Double.toString(initVel2) );
           */
      }
      //////////////////////////////////////////////////////////////
      public Body(String name, double mass, double bodyRadius, double orbitRadius, double theta){
-    	 
+         
          m_name        = name;
          m_mass        = mass;
          m_bodyRadius  = bodyRadius;
@@ -62,7 +65,7 @@ public class Body{
          m_theta       = theta;
          
          m_oneOverMass = 1.0 / m_mass;
-    	 
+         
          setPosAndVel(orbitRadius, theta);
      }
      //////////////////////////////////////////////////////////////////
@@ -83,23 +86,23 @@ public class Body{
           * 
           */
          if( orbitRadius > 0) {
-        	 double sqrtGMoverR = Math.sqrt( Config.m_massOfSun * Config.m_gravitationalConst / orbitRadius);
+             double sqrtGMoverR = Math.sqrt( Config.m_massOfSun * Config.m_gravitationalConst / orbitRadius);
          
-        	 initVel0    = - Math.sin(theta) * sqrtGMoverR;
-        	 initVel1    =   Math.cos(theta) * sqrtGMoverR;
-        	 initVel2    =   0.0;    
+             initVel0    = - Math.sin(theta) * sqrtGMoverR;
+             initVel1    =   Math.cos(theta) * sqrtGMoverR;
+             initVel2    =   0.0;    
          } else {
-        	 initVel0    = 0.0;
-        	 initVel1    = 0.0;
-        	 initVel2    = 0.0;        	 
+             initVel0    = 0.0;
+             initVel1    = 0.0;
+             initVel2    = 0.0;             
          }
          
-    	 initialize(initPos0, initPos1, initPos2, initVel0, initVel1, initVel2);
+         initialize(initPos0, initPos1, initPos2, initVel0, initVel1, initVel2);
           
      }     
      //////////////////////////////////////////////////////////////
      public void resetTheta(double theta){ 
-    	 setPosAndVel(m_orbitRadius, theta);
+         setPosAndVel(m_orbitRadius, theta);
      }
      //////////////////////////////////////////////////////////////
      public String   getName()        { return m_name;        }
